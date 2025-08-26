@@ -4,13 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
-// Define navigation menu type
 type NavigationItem = {
   label: string;
   href: string;
 };
 
-// Navigation menu items
 const navigationItems: NavigationItem[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
