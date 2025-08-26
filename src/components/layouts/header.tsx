@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { AuthenMenu } from "@/components/auth/authen-menu";
 
 type NavigationItem = {
   label: string;
@@ -49,6 +50,7 @@ export function Header() {
         {/* Sign In / Sign Up Buttons */}
         <div className="flex items-center space-x-2">
           <ThemeToggle />
+          <AuthenMenu />
         </div>
       </div>
     </header>

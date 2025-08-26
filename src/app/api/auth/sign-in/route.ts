@@ -1,12 +1,12 @@
 import { findUserByEmail, issueTokens } from "@/lib/auth";
 import { verifyPassword } from "@/lib/crypto";
 import { LoginResponse } from "@/types/auth";
-import { loginSchema } from "@/zod/auth";
+import { signInSchema } from "@/zod/auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request): Promise<NextResponse> {
   const body = await req.json().catch(() => ({}));
-  const parsed = loginSchema.safeParse(body);
+  const parsed = signInSchema.safeParse(body);
   if (!parsed.success)
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
 

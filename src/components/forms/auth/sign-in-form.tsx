@@ -1,0 +1,135 @@
+"use client";
+
+import { auth } from "@/axios/auth";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { SignInSchema, signInSchema } from "@/zod/auth";
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { toast } from "sonner";
+
+export default function SignInForm() {
+  const mutation = useMutation({
+    mutationFn: (payload: SignInSchema) => auth.signIn(payload),
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success("Sign in successful");
+    },
+    onError: (error: string) => {
+      toast.error(error ?? "Sign in failed");
+    },
+  });
+  const form = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    validators: {
+      onSubmit: signInSchema,
+    },
+    onSubmit: async (values) => {
+      mutation.mutate(values.value);
+    },
+  });
+
+  return (
+    <Card className="bg-background mx-auto w-full max-w-md border-none shadow-none">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
+        <CardDescription className="">
+          Enter your email and password to access your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
+          <form.Field name="email">
+            {(field) => (
+              <div className="space-y-2">
+                <Label
+                  htmlFor={field.name}
+                  className={cn(
+                    field.state.meta.errors.length > 0 && "text-red-500"
+                  )}
+                >
+                  Email
+                </Label>
+                <Input
+                  id={field.name}
+                  name="email"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter your email"
+                  type="email"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]?.message}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+          <form.Field name="password">
+            {(field) => (
+              <div className="space-y-2">
+                <Label
+                  htmlFor={field.name}
+                  className={cn(
+                    field.state.meta.errors.length > 0 && "text-red-500"
+                  )}
+                >
+                  Password
+                </Label>
+                <Input
+                  id={field.name}
+                  name="password"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  placeholder="Enter your password"
+                  type="password"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p className="text-sm text-red-500">
+                    {field.state.meta.errors[0]?.message}
+                  </p>
+                )}
+              </div>
+            )}
+          </form.Field>
+          <form.Subscribe selector={(state) => [state.isSubmitting]}>
+            {([isSubmitting]) => (
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting ? "Signing in..." : "Sign in"}
+              </Button>
+            )}
+          </form.Subscribe>
+        </form>
+        <div className="mt-4 text-center text-sm">
+          Don't have an account?{" "}
+          <Link href="/sign-up" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}

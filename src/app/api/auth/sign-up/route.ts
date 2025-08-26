@@ -46,9 +46,10 @@ export async function POST(req: Request) {
       name: parsed.data.name,
       slug: slugify(parsed.data.name),
     })
-    .returning({ id: users.id, email: users.email, name: users.name });
+    .returning();
 
   const { accessToken } = await issueTokens(created.id);
+  const { password, ...userData } = created;
 
-  return NextResponse.json({ accessToken, user: created }, { status: 201 });
+  return NextResponse.json({ accessToken, user: userData }, { status: 201 });
 }
