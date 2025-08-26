@@ -2,7 +2,7 @@ interface LoadingScreenProps {
   message?: string;
 }
 
-export function LoadingScreen({ message = 'Loading...' }: LoadingScreenProps) {
+export function LoadingScreen({ message = "Loading..." }: LoadingScreenProps) {
   return (
     <div className="bg-background flex min-h-screen items-center justify-center p-4">
       <div className="flex items-center gap-3">
