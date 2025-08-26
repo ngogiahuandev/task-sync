@@ -1,13 +1,14 @@
-import { pgTable, uuid, text, timestamp, pgEnum } from "drizzle-orm/pg-core";
-
-export const roles = pgEnum("role", ["admin", "regular"]);
+import { roles } from "@/db/schema/rbac.schema";
+import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   name: text("name").notNull(),
-  role: roles("role").notNull().default("regular"),
+  roleId: uuid("role_id")
+    .references(() => roles.id)
+    .notNull(),
   imageUrl: text("image_url").default(""),
   slug: text("slug").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
