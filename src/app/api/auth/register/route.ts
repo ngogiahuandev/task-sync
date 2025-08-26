@@ -5,6 +5,7 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "@/lib/crypto";
 import { issueTokens } from "@/lib/auth";
+import { slugify } from "@/lib/slug";
 
 const schema = z.object({
   email: z.email(),
@@ -17,14 +18,13 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid body", issues: parsed.error.flatten() },
+      { error: "Invalid body", issues: parsed.error.flatten },
       { status: 400 }
     );
   }
 
   const email = parsed.data.email.trim().toLowerCase();
 
-  // ensure unique email
   const [exists] = await db
     .select()
     .from(users)
@@ -36,16 +36,18 @@ export async function POST(req: Request) {
       { status: 409 }
     );
 
-  // hash the password
   const passwordHash = await hashPassword(parsed.data.password);
 
-  // create the user
   const [created] = await db
     .insert(users)
-    .values({ email, password: passwordHash, name: parsed.data.name })
+    .values({
+      email,
+      password: passwordHash,
+      name: parsed.data.name,
+      slug: slugify(parsed.data.name),
+    })
     .returning({ id: users.id, email: users.email, name: users.name });
 
-  // auto-login on register: set httpOnly refresh cookie + return access token
   const { accessToken } = await issueTokens(created.id);
 
   return NextResponse.json({ accessToken, user: created }, { status: 201 });

@@ -8,6 +8,9 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   name: text("name").notNull(),
   role: roles("role").notNull().default("regular"),
+  imageUrl: text("image_url").default(""),
+  slug: text("slug").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 export type IUser = typeof users.$inferInsert;
