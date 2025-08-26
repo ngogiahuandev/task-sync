@@ -12,23 +12,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/stores/auth.store";
 import { SignInSchema, signInSchema } from "@/zod/auth";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function SignInForm() {
+  const router = useRouter();
   const mutation = useMutation({
     mutationFn: (payload: SignInSchema) => auth.signIn(payload),
     onSuccess: (data) => {
-      console.log(data);
       toast.success("Sign in successful");
+      useAuthStore.setState({
+        accessToken: data.accessToken,
+        user: data.user,
+        isAuthenticated: true,
+      });
+      router.push("/");
     },
     onError: (error: string) => {
       toast.error(error ?? "Sign in failed");
     },
   });
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -78,6 +87,7 @@ export default function SignInForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter your email"
                   type="email"
+                  disabled={mutation.isPending}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
@@ -106,6 +116,7 @@ export default function SignInForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter your password"
                   type="password"
+                  disabled={mutation.isPending}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
@@ -115,14 +126,17 @@ export default function SignInForm() {
               </div>
             )}
           </form.Field>
-          <form.Subscribe selector={(state) => [state.isSubmitting]}>
-            {([isSubmitting]) => (
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? "Signing in..." : "Sign in"}
-              </Button>
-            )}
+          <form.Subscribe>
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full"
+            >
+              {mutation.isPending ? "Signing in..." : "Sign in"}
+            </Button>
           </form.Subscribe>
         </form>
+
         <div className="mt-4 text-center text-sm">
           Don't have an account?{" "}
           <Link href="/sign-up" className="text-blue-600 hover:underline">

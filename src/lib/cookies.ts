@@ -1,3 +1,5 @@
+"use server";
+
 import { cookies } from "next/headers";
 
 const name = process.env.REFRESH_COOKIE_NAME || "rt";

@@ -79,6 +79,7 @@ export default function SignUpForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter your name"
                   type="text"
+                  disabled={mutation.isPending}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
@@ -107,6 +108,7 @@ export default function SignUpForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter your email"
                   type="email"
+                  disabled={mutation.isPending}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
@@ -135,6 +137,7 @@ export default function SignUpForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Enter your password"
                   type="password"
+                  disabled={mutation.isPending}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
@@ -163,6 +166,7 @@ export default function SignUpForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="Confirm your password"
                   type="password"
+                  disabled={mutation.isPending}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-sm text-red-500">
@@ -172,12 +176,14 @@ export default function SignUpForm() {
               </div>
             )}
           </form.Field>
-          <form.Subscribe selector={(state) => [state.isSubmitting]}>
-            {([isSubmitting]) => (
-              <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting ? "Signing up..." : "Sign up"}
-              </Button>
-            )}
+          <form.Subscribe>
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full"
+            >
+              {mutation.isPending ? "Signing up..." : "Sign up"}
+            </Button>
           </form.Subscribe>
         </form>
         <div className="mt-4 text-center text-sm">

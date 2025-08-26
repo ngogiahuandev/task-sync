@@ -1,6 +1,6 @@
 import { findUserByEmail, issueTokens } from "@/lib/auth";
 import { verifyPassword } from "@/lib/crypto";
-import { LoginResponse } from "@/types/auth";
+import { SignInResponse } from "@/types/auth";
 import { signInSchema } from "@/zod/auth";
 import { NextResponse } from "next/server";
 
@@ -20,8 +20,11 @@ export async function POST(req: Request): Promise<NextResponse> {
 
   const { accessToken } = await issueTokens(user.id!);
   const { password, ...userData } = user;
-  return NextResponse.json<LoginResponse>({
-    accessToken,
-    user: userData,
-  });
+  return NextResponse.json<SignInResponse>(
+    {
+      accessToken,
+      user: userData,
+    },
+    { status: 201 }
+  );
 }

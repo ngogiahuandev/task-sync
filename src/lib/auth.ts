@@ -34,8 +34,8 @@ export async function issueTokens(userId: string) {
   const rtHash = sha256(rtRaw);
   await redis.set(`refresh:${userId}`, rtHash, "EX", REFRESH_TTL);
 
-  setRefreshTokenCookie(rtRaw, REFRESH_TTL);
-  setUidCookie(userId, REFRESH_TTL);
+  await setRefreshTokenCookie(rtRaw, REFRESH_TTL);
+  await setUidCookie(userId, REFRESH_TTL);
 
   return { accessToken };
 }
@@ -55,17 +55,17 @@ export async function rotateRefreshTokenFromCookie() {
   const newRtRaw = newRandomToken(32);
   const newRtHash = sha256(newRtRaw);
   await redis.set(`refresh:${uid}`, newRtHash, "EX", REFRESH_TTL);
-  setRefreshTokenCookie(newRtRaw, REFRESH_TTL);
-  setUidCookie(uid, REFRESH_TTL);
+  await setRefreshTokenCookie(newRtRaw, REFRESH_TTL);
+  await setUidCookie(uid, REFRESH_TTL);
   const accessToken = await signAccessToken({ sub: uid });
 
   return { accessToken };
 }
 
 export async function revokeRefreshFromCookies() {
-  const uid = getUidCookie();
+  const uid = await getUidCookie();
   if (uid) await redis.del(`refresh:${uid}`);
-  Promise.all([clearRefreshCookie(), clearUidCookie()]);
+  await Promise.all([clearRefreshCookie(), clearUidCookie()]);
 }
 
 export async function getUserIdFromAuthHeader(req: NextRequest) {

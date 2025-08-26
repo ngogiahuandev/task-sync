@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import { hashPassword } from "@/lib/crypto";
 import { issueTokens } from "@/lib/auth";
 import { slugify } from "@/lib/slug";
+import { SignUpResponse } from "@/types/auth";
 
 const schema = z.object({
   email: z.email(),
@@ -51,5 +52,8 @@ export async function POST(req: Request) {
   const { accessToken } = await issueTokens(created.id);
   const { password, ...userData } = created;
 
-  return NextResponse.json({ accessToken, user: userData }, { status: 201 });
+  return NextResponse.json<SignUpResponse>(
+    { accessToken, user: userData },
+    { status: 201 }
+  );
 }
