@@ -38,17 +38,6 @@ export async function POST(req: Request) {
     );
 
   const passwordHash = await hashPassword(parsed.data.password);
-  const defaultRoles = await db
-    .select()
-    .from(roles)
-    .where(eq(roles.isDefault, true));
-
-  if (defaultRoles.length === 0) {
-    return NextResponse.json(
-      { error: "No default roles found" },
-      { status: 500 }
-    );
-  }
 
   const [created] = await db
     .insert(users)
@@ -57,7 +46,6 @@ export async function POST(req: Request) {
       password: passwordHash,
       name: parsed.data.name,
       slug: slugify(parsed.data.name),
-      roleId: defaultRoles[0].id,
     })
     .returning();
 
