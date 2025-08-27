@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid body", issues: parsed.error.flatten },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   if (exists)
     return NextResponse.json(
       { error: "Email already registered" },
-      { status: 409 }
+      { status: 409 },
     );
 
   const passwordHash = await hashPassword(parsed.data.password);
@@ -54,6 +54,6 @@ export async function POST(req: Request) {
 
   return NextResponse.json<SignUpResponse>(
     { accessToken, user: userData },
-    { status: 201 }
+    { status: 201 },
   );
 }

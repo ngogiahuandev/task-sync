@@ -15,7 +15,7 @@ import { eq } from "drizzle-orm";
 import { NextRequest } from "next/server";
 
 const REFRESH_TTL = Number(
-  process.env.REFRESH_TOKEN_TTL_SECONDS ?? 60 * 60 * 24 * 30
+  process.env.REFRESH_TOKEN_TTL_SECONDS ?? 60 * 60 * 24 * 30,
 );
 
 export async function findUserByEmail(email: string): Promise<IUser | null> {

@@ -9,7 +9,7 @@ export const auth = {
     try {
       const response = await axiosInstance.post<SignInResponse>(
         "/auth/sign-in",
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -24,7 +24,7 @@ export const auth = {
     try {
       const response = await axiosInstance.post<SignUpResponse>(
         "/auth/sign-up",
-        data
+        data,
       );
       return response.data;
     } catch (error) {
@@ -37,9 +37,8 @@ export const auth = {
 
   me: async () => {
     try {
-      const response = await axiosInstance.get<Omit<IUser, "password">>(
-        "/auth/me"
-      );
+      const response =
+        await axiosInstance.get<Omit<IUser, "password">>("/auth/me");
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -52,7 +51,7 @@ export const auth = {
   refresh: async () => {
     try {
       const response = await axiosInstance.post<{ accessToken: string }>(
-        "/auth/refresh"
+        "/auth/refresh",
       );
       return response.data;
     } catch (error) {

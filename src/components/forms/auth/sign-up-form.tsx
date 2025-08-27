@@ -75,7 +75,7 @@ export default function SignUpForm() {
                 <Label
                   htmlFor={field.name}
                   className={cn(
-                    field.state.meta.errors.length > 0 && "text-red-500"
+                    field.state.meta.errors.length > 0 && "text-red-500",
                   )}
                 >
                   Name
@@ -104,7 +104,7 @@ export default function SignUpForm() {
                 <Label
                   htmlFor={field.name}
                   className={cn(
-                    field.state.meta.errors.length > 0 && "text-red-500"
+                    field.state.meta.errors.length > 0 && "text-red-500",
                   )}
                 >
                   Email
@@ -133,7 +133,7 @@ export default function SignUpForm() {
                 <Label
                   htmlFor={field.name}
                   className={cn(
-                    field.state.meta.errors.length > 0 && "text-red-500"
+                    field.state.meta.errors.length > 0 && "text-red-500",
                   )}
                 >
                   Password
@@ -162,7 +162,7 @@ export default function SignUpForm() {
                 <Label
                   htmlFor={field.name}
                   className={cn(
-                    field.state.meta.errors.length > 0 && "text-red-500"
+                    field.state.meta.errors.length > 0 && "text-red-500",
                   )}
                 >
                   Confirm Password

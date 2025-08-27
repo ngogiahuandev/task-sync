@@ -76,16 +76,12 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "users_slug_unique": {
           "name": "users_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -97,10 +93,7 @@
     "public.roles": {
       "name": "roles",
       "schema": "public",
-      "values": [
-        "admin",
-        "regular"
-      ]
+      "values": ["admin", "regular"]
     }
   },
   "schemas": {},

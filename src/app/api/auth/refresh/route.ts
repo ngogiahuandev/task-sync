@@ -8,7 +8,7 @@ export async function POST() {
   } catch (e: any) {
     return NextResponse.json(
       { error: e?.message || "Unauthorized" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 }

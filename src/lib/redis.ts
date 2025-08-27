@@ -3,7 +3,7 @@ import Redis from "ioredis";
 const url = process.env.REDIS_URL;
 if (!url) {
   throw new Error(
-    "REDIS_URL is not set. For Docker use redis://redis:6379; for local dev use redis://127.0.0.1:6379"
+    "REDIS_URL is not set. For Docker use redis://redis:6379; for local dev use redis://127.0.0.1:6379",
   );
 }
 

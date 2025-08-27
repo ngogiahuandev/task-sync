@@ -25,6 +25,6 @@ export async function POST(req: Request): Promise<NextResponse> {
       accessToken,
       user: userData,
     },
-    { status: 201 }
+    { status: 201 },
   );
 }
