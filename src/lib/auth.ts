@@ -19,12 +19,17 @@ const REFRESH_TTL = Number(
 );
 
 export async function findUserByEmail(email: string): Promise<IUser | null> {
-  const [u] = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-  return u ?? null;
+  try {
+    const [u] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+    return u ?? null;
+  } catch (error) {
+    console.error("Error finding user by email:", error);
+    return null;
+  }
 }
 
 export async function issueTokens(userId: string) {
