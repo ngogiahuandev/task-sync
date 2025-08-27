@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db/drizzle";
-import { users } from "@/db/schema";
+import { roles, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "@/lib/crypto";
 import { issueTokens } from "@/lib/auth";
@@ -38,6 +38,17 @@ export async function POST(req: Request) {
     );
 
   const passwordHash = await hashPassword(parsed.data.password);
+  const defaultRoles = await db
+    .select()
+    .from(roles)
+    .where(eq(roles.isDefault, true));
+
+  if (defaultRoles.length === 0) {
+    return NextResponse.json(
+      { error: "No default roles found" },
+      { status: 500 }
+    );
+  }
 
   const [created] = await db
     .insert(users)
@@ -46,6 +57,7 @@ export async function POST(req: Request) {
       password: passwordHash,
       name: parsed.data.name,
       slug: slugify(parsed.data.name),
+      roleId: defaultRoles[0].id,
     })
     .returning();
 

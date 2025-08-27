@@ -6,9 +6,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   name: text("name").notNull(),
-  roleId: uuid("role_id")
-    .references(() => roles.id)
-    .notNull(),
+  roleId: uuid("role_id").references(() => roles.id),
   imageUrl: text("image_url").default(""),
   slug: text("slug").notNull().unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
