@@ -1,6 +1,6 @@
 import { findUserByEmail, issueTokens } from "@/lib/auth";
 import { verifyPassword } from "@/lib/crypto";
-import { SignInResponse } from "@/types/auth";
+import type { SignInResponse } from "@/types/auth";
 import { signInSchema } from "@/zod/auth";
 import { NextResponse } from "next/server";
 
@@ -18,13 +18,13 @@ export async function POST(req: Request): Promise<NextResponse> {
   if (!ok)
     return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
 
-  const { accessToken } = await issueTokens(user.id!);
-  const { password, ...userData } = user;
+  const { accessToken } = await issueTokens({ id: user.id, role: user.role });
+  const { password: _password, ...userData } = user;
   return NextResponse.json<SignInResponse>(
     {
       accessToken,
       user: userData,
     },
-    { status: 201 },
+    { status: 201 }
   );
 }

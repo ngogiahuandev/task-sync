@@ -3,7 +3,12 @@ import { jwtVerify, SignJWT } from "jose";
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 const ttl = process.env.ACCESS_TOKEN_TTL || "15m";
 
-export async function signAccessToken(payload: object) {
+export type JWTPayload = {
+  sub: string;
+  role: string;
+};
+
+export async function signAccessToken(payload: JWTPayload) {
   return await new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
@@ -11,7 +16,7 @@ export async function signAccessToken(payload: object) {
     .sign(secret);
 }
 
-export async function verifyAccessToken<T = any>(token: string) {
+export async function verifyAccessToken<T = unknown>(token: string) {
   const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
-  return payload as T & { sub?: string };
+  return payload as JWTPayload & T;
 }

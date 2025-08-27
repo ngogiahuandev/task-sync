@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/db/drizzle";
-import { roles, users } from "@/db/schema";
+import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { hashPassword } from "@/lib/crypto";
 import { issueTokens } from "@/lib/auth";
 import { slugify } from "@/lib/slug";
-import { SignUpResponse } from "@/types/auth";
+import type { SignUpResponse } from "@/types/auth";
 
 const schema = z.object({
   email: z.email(),
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid body", issues: parsed.error.flatten },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
   if (exists)
     return NextResponse.json(
       { error: "Email already registered" },
-      { status: 409 },
+      { status: 409 }
     );
 
   const passwordHash = await hashPassword(parsed.data.password);
@@ -49,11 +49,14 @@ export async function POST(req: Request) {
     })
     .returning();
 
-  const { accessToken } = await issueTokens(created.id);
-  const { password, ...userData } = created;
+  const { accessToken } = await issueTokens({
+    id: created.id,
+    role: created.role,
+  });
+  const { password: _password, ...userData } = created;
 
   return NextResponse.json<SignUpResponse>(
     { accessToken, user: userData },
-    { status: 201 },
+    { status: 201 }
   );
 }
